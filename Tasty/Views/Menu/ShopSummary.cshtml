@@ -1,0 +1,23 @@
+﻿@model Shop
+
+<div class="shoplist-item my-border backgroud-color-secondary my-box-shadow" style="color: inherit; text-decoration: none; display: flex; flex-direction: column; box-shadow: rgb(0, 0, 0, 0.2) 0px 0px 4px; padding: 1.5rem; margin: 10px 0 0">
+    <div class="row">
+        <div class="col">
+            <h3>@Model.Name</h3>
+        </div>
+        <div class="col-4 text-end">
+            @if (ViewBag.IsOpen)
+            {
+                @await Component.InvokeAsync("CartSummary", Model.ShopId)
+            }
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            @foreach (Category c in Model.Categories)
+            {
+                <span>@c.Name </span>
+            }
+        </div>
+    </div>
+</div>

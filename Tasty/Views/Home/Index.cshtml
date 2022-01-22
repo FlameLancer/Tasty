@@ -1,0 +1,13 @@
+﻿@{
+    ViewData["Title"] = "Strona główna";
+}
+
+<form asp-action="ShopList" method="get" class="my-border backgroud-color-secondary my-box-shadow" style="display: flex; flex-direction: column; padding: 1.5rem; margin: 10px 0">
+    <div>
+        <label for="postCode" class="form-label">Podaj swój kod pocztowy</label>
+        <span class="d-flex">
+            <input class="form-control" style="width: 60%" type="text" name="postCode" id="postCode" placeholder="np.: 35-304">
+            <input class="ms-2 btn btn-success" type="submit" value="Wyszukaj">
+        </span>
+    </div>
+</form>

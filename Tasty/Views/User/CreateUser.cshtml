@@ -1,0 +1,48 @@
+﻿@model CreateUserViewModel
+@{
+    ViewData["Title"] = "Edycja użytkownika";
+}
+
+<div class="my-border backgroud-color-secondary my-box-shadow" style="color: inherit; text-decoration: none; display: flex; flex-direction: column; box-shadow: rgb(0, 0, 0, 0.2) 0px 0px 4px; padding: 1.5rem; margin: 10px 0 0">
+    <h3>Tworzenie konta użytkownika</h3>
+    <div asp-validation-summary="All" class="text-danger"></div>
+    <form asp-action="CreateUser" method="post">
+        <input hidden asp-for="ReturnUrl" value="@ViewBag.ReturnUrl" />
+        <div class="mb-3">
+            <label asp-for="Login" class="form-label">Login</label>
+            <input asp-for="Login" class="form-control" />
+        </div>
+        <div class="mb-3">
+            <label asp-for="Email" class="form-label">E-mail</label>
+            <input asp-for="Email" class="form-control" />
+        </div>
+        <div class="mb-3">
+            <label asp-for="Password" class="form-label">Hasło</label>
+            <input type="password" asp-for="Password" class="form-control" />
+        </div>
+        <label class="form-label">Pola opcionalne:</label>
+        <div class="mb-3">
+            <label asp-for="Name" class="form-label">Imię i nazwisko</label>
+            <input asp-for="Name" class="form-control" />
+        </div>
+        <div class="mb-3">
+            <label asp-for="Phone" class="form-label">Numer telefonu</label>
+            <input asp-for="Phone" class="form-control" />
+        </div>
+        <div class="mb-3">
+            <label asp-for="Street" class="form-label">Ulica</label>
+            <input asp-for="Street" class="form-control" />
+        </div>
+        <div class="mb-3">
+            <label asp-for="City" class="form-label">Miasto</label>
+            <input asp-for="City" class="form-control" />
+        </div>
+        <div class="mb-3">
+            <label asp-for="Zip" class="form-label">Kod pocztowy</label>
+            <input asp-for="Zip" class="form-control" />
+        </div>
+        <div class="text-center">
+            <input class="btn btn-success" type="submit" value="Stwórz Konto" />
+        </div>
+    </form>
+</div>

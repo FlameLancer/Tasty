@@ -1,0 +1,24 @@
+﻿@model MenuViewModel
+@{
+    ViewData["Title"] = Model.Shop.Name;
+    ViewBag.Prev = true;
+    ViewBag.ReturnUrl = Model.ReturnUrl;
+    ViewBag.IsOpen = Model.IsOpen;
+}
+<a asp-action="Details" asp-route-name="@Model.Shop.Name.Trim().Replace(" ","-")" asp-route-shopId="@Model.Shop.ShopId" asp-route-returnUrl="@Model.ReturnUrl">Informacje</a>
+<div style="display: flex; flex-direction: column; margin: 10px 0 0">
+    @await Html.PartialAsync("ShopSummary", Model.Shop)
+    @foreach (MenuCategory mc in Model.Shop.MenuCategories)
+    {
+        <div style="display: flex; flex-direction: column; margin: 10px 0 0">
+            <div style="font: 500 18px arial, verdena; margin: 5px">
+                @mc.Name
+            </div>
+            @foreach (Item i in mc.Items)
+            {
+                @await Html.PartialAsync("ItemSummary", new ItemSummaryViewModel { Item = i, ShopId = Model.Shop.ShopId })
+            }
+        </div>
+    }
+</div>
+

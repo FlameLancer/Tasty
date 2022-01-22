@@ -1,0 +1,62 @@
+﻿@model CategoriesViewModel
+@{
+    ViewData["Title"] = "Kategorie";
+}
+
+<div class="text-center m-3">
+    @TempData["message"]
+</div>
+
+<div class="my-border backgroud-color-secondary my-box-shadow" style="display: flex;  padding: 1.5rem; margin: 10px 0">
+    <a style="margin: 0 0 0 10px" class="ms-auto btn btn-success" asp-action="CreateCategory">Stwórz kategorie</a>
+</div>
+
+@if (Model.Categories.Count() > 0)
+{
+    <table style="margin: 10px 0 0" class="backgroud-color-secondary my-box-shadow table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th class="w-50">Nazwa</th>
+                <th style="width: 20%">Ilość sklepów</th>
+                <th style="width: 15%"></th>
+                <th style="width: 15%"></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (Category c in Model.Categories)
+            {
+                <tr>
+                    <td>@c.Name</td>
+                    <td>@c.Shops.Count()</td>
+                    <td class="text-center">
+                        <a asp-action="EditCategory" asp-route-categoryId="@c.CategoryId" class="btn btn-sm btn-success">
+                            Edytuj
+                        </a>
+                    </td>
+                    <td class="text-center">
+                        @if(c.Shops.Count() == 0)
+                        {
+                        <form asp-action="DeleteCategory" method="post">
+                            <input type="hidden" name="categoryId" value="@c.CategoryId" />
+                            <input type="hidden" name="page" value="@Model.PagingInfo.CurrentPage" />
+                            <button type="submit" class="btn btn-sm btn-danger">
+                                Usuń
+                            </button>
+                        </form>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>    
+    </table>
+}
+else
+{
+    <div class="text-center">Brak kategorii</div>
+}
+
+<div page-model="@Model.PagingInfo" page-action="Categories" page-classes-enabled="true"
+     page-class="btn" page-class-normal="btn-secondary"
+     page-class-selected="btn-success"
+     class="btn-group pull-right m-1">
+</div>

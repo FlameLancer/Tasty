@@ -1,0 +1,73 @@
+﻿@model EditDetailsViewModel
+@{
+    var culture = new System.Globalization.CultureInfo("pl-PL");
+    ViewData["Title"] = Model.Shop.Name ?? "Restauracja";
+}
+
+<div class="my-border backgroud-color-secondary my-box-shadow" style="color: inherit; text-decoration: none; display: flex; flex-direction: column; box-shadow: rgb(0, 0, 0, 0.2) 0px 0px 4px; padding: 1.5rem; margin: 10px 0 0">
+    <h3>Sklep</h3>
+    <p>Prosze podać dane sklepu</p>
+    <div asp-validation-summary="All" class="text-danger"></div>
+    <form asp-action="EditDetails" method="post">
+        <input type="hidden" asp-for="Shop.ShopId" />
+        <div class="mb-3">
+            <label asp-for="Shop.Name" class="form-label">Nazwa sklepu</label>
+            <input asp-for="Shop.Name" class="form-control" />
+        </div>
+        <div class="mb-3">
+            <label asp-for="Shop.MinPrice" class="form-label">Minimalna cena zamówienia</label>
+            <input asp-for="Shop.MinPrice" class="form-control" />
+        </div>
+        <div class="mb-3">
+            <label asp-for="Shop.TransportPrice" class="form-label">Cena dostawy</label>
+            <input asp-for="Shop.TransportPrice" class="form-control" />
+        </div>
+        <div class="mb-3">
+            <label asp-for="Shop.PostCodes" class="form-label">Obsługiwane regiony (kody pocztowe)</label>
+            <textarea placeholder="xx-xxx xx-xxx xx-xxx itd..." asp-for="Shop.PostCodes" rows="4" class="form-control"></textarea>
+        </div>
+        <input type="hidden" asp-for="Shop.ShopAddress.ShopAddressId" />
+        <input type="hidden" asp-for="Shop.ShopAddress.ShopId" />
+        <input type="hidden" asp-for="Shop.ShopAddress.Shop" />
+        <div class="mb-3">
+            <label asp-for="Shop.ShopAddress.City" class="form-label">Miasto</label>
+            <input asp-for="Shop.ShopAddress.City" class="form-control" />
+        </div>
+        <div class="mb-3">
+            <label asp-for="Shop.ShopAddress.PostCode" class="form-label">Kod pocztowy</label>
+            <input asp-for="Shop.ShopAddress.PostCode" class="form-control" />
+        </div>
+        <div class="mb-3">
+            <label asp-for="Shop.ShopAddress.Street" class="form-label">Ulica</label>
+            <input asp-for="Shop.ShopAddress.Street" class="form-control" />
+        </div>
+        @for (int i = 1; i < 8; i++)
+        {
+            <input type="hidden" asp-for="OpeningTimes[i % 7].ShopId" />
+            <input type="hidden" asp-for="OpeningTimes[i % 7].DayOfWeek" />
+            <div>
+                <label class="form-label" style="font-size: 18px">
+                    @{
+                        string str = culture.DateTimeFormat.GetDayName(Model.OpeningTimes[i % 7].DayOfWeek);
+                    }
+                    @char.ToUpper(str[0])@str.Substring(1)
+                </label>
+            </div>
+            <div class="mb-2">
+                <label asp-for="OpeningTimes[i % 7].Opening" class="form-label">Godzina otwarcia restauracji</label>
+                <input asp-for="OpeningTimes[i % 7].Opening" class="form-control" />
+            </div>
+            <div class="mb-3">
+                <label asp-for="OpeningTimes[i % 7].Closing" class="form-label">Godzina zamknięcia restauracji</label>
+                <input asp-for="OpeningTimes[i % 7].Closing" class="form-control" value="@Model.OpeningTimes[i % 7].Closing.ToString(@"d\.hh\:mm\:ss")" />
+            </div>
+        }
+        <div class="mb-3">
+            <label asp-for="SelectedCategories" class="form-label">Kategorie</label>
+            <select class="form-select" asp-for="SelectedCategories" asp-items="Model.Categories"></select>
+        </div>
+        <div class="text-center">
+            <input class="btn btn-success" type="submit" value="Zapisz sklep" />
+        </div>
+    </form>
+</div>

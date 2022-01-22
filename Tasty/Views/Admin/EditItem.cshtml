@@ -1,0 +1,30 @@
+﻿@model Item
+@{
+    ViewData["Title"] = Model.Name ?? "Przedmiot";
+}
+
+<div class="my-border backgroud-color-secondary my-box-shadow" style="color: inherit; text-decoration: none; display: flex; flex-direction: column; box-shadow: rgb(0, 0, 0, 0.2) 0px 0px 4px; padding: 1.5rem; margin: 10px 0 0">
+    <h3>Przedmiot</h3>
+    <p>Prosze podać dane przedmiotu</p>
+    <div asp-validation-summary="All" class="text-danger"></div>
+    <form asp-action="EditItem" method="post">
+        <div class="mb-3">
+            <label asp-for="Name" class="form-label">Nazwa przedmiotu</label>
+            <input asp-for="Name" class="form-control" />
+        </div>
+        <div class="mb-3">
+            <label asp-for="Description" class="form-label">Opis</label>
+            <input asp-for="Description" class="form-control" />
+        </div>
+        <div class="mb-3">
+            <label asp-for="Price" class="form-label">Cena</label>
+            <input asp-for="Price" class="form-control" />
+        </div>
+        @await Component.InvokeAsync("EditItem", @ViewBag.ShopId)
+        <input type="hidden" name="shopId" value="@ViewBag.ShopId" />
+        <input type="hidden" asp-for="ItemId" />
+        <div class="text-center">
+            <input class="btn btn-success" type="submit" value="Zapisz przedmiot" />
+        </div>
+    </form>
+</div>

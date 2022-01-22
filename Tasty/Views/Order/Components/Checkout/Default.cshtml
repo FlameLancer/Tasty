@@ -1,0 +1,14 @@
+﻿@model CheckoutViewModel
+
+<div class="mb-3">
+    <label for="deliveryTime" class="form-label">Czas dostawy</label>
+    <select id="deliveryTime" name="DeliveryTime" class="form-select">
+        <option value="">Wybierz czas dostawy</option>
+        @while (true)
+        {
+            if (Model.Now > Model.End) break;
+            <option value="@Model.Now">@Model.Now.ToString(@"hh\:mm")</option>
+            Model.Now += TimeSpan.FromMinutes(30);
+        }
+    </select>
+</div>

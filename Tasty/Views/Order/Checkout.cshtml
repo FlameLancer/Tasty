@@ -1,0 +1,40 @@
+﻿@model Order
+@{
+    ViewData["Title"] = "Zamówienie";
+}
+
+<div class="shoplist-item my-border backgroud-color-secondary my-box-shadow" style="color: inherit; text-decoration: none; display: flex; flex-direction: column; padding: 1.5rem; margin: 10px 0 0">
+    <h3>Złóż zamówienie</h3>
+    <p>Prosze podać dane zamówienia</p>
+    <div asp-validation-summary="All" class="text-danger"></div>
+    <form asp-action="Checkout" method="post">
+        <div class="mb-3">
+            <label asp-for="Name" class="form-label">Imię i nazwisko</label>
+            <input asp-for="Name" class="form-control" />
+        </div>
+        <div class="mb-3">
+            <label asp-for="Street" class="form-label">Adres</label>
+            <input asp-for="Street" class="form-control" />
+        </div>
+        <div class="mb-3">
+            <label asp-for="City" class="form-label">Miasto</label>
+            <input asp-for="City" class="form-control" />
+        </div>
+        <div class="mb-3">
+            <label asp-for="Phone" class="form-label">Numer Telefonu</label>
+            <input asp-for="Phone" class="form-control" />
+        </div>
+        <div class="mb-3">
+            <label asp-for="Zip" class="form-label">Kod pocztowy</label>
+            <input asp-for="Zip" class="form-control" />
+        </div>
+        @await Component.InvokeAsync("Checkout", @ViewBag.ShopId)
+        <input type="hidden" class="form-control" name="shopId" value="@ViewBag.ShopId" />
+        <div class="text-center">
+            <input class="btn btn-success" type="submit" value="Złóż zamówienie" />
+        </div>
+    </form>
+</div>
+
+
+

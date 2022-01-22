@@ -1,0 +1,73 @@
+﻿@model UsersWithPagesViewModel
+@{
+    ViewData["Title"] = "Użytkownicy";
+}
+
+<div class="my-border backgroud-color-secondary my-box-shadow" style="display: flex; box-shadow: rgb(0, 0, 0, 0.2) 0px 0px 4px; padding: 1.5rem; margin: 10px 0">
+    <a style="margin: 0 10px 0 0" class="btn btn-success" asp-action="CreateUser" asp-route-returnUrl="@ViewContext.HttpContext.Request.PathAndQuery()">Stwórz Użytkownika</a>
+</div>
+
+<div class="text-danger" asp-validation-summary="ModelOnly"></div>
+
+<table style="margin: 10px 0 0" class="backgroud-color-secondary my-box-shadow table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th style="width: 15%">Nazwa</th>
+            <th style="width: 25%">Email</th>
+            <th style="width: 10%">Rola</th>
+            <th style="width: 15%">Sklepy</th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.Users.Count() == 0)
+        {
+            <tr>
+                <td colspan="8" class="text-center">Brak użytkowników</td>
+            </tr>
+        }
+        else
+        {
+            foreach (UsersViewModel user in Model.Users)
+            {
+                <tr>
+                    <td>@user.Login</td>
+                    <td>@user.Email</td>
+                    <td>@user.Roles</td>
+                    <td>
+                        @foreach (Shop s in user.Shops)
+                        {
+                            @:[@s.Name]&nbsp;
+                        }
+                    </td>
+                    <td class="text-center align-middle">
+                        <a asp-action="EditUserDetails" asp-route-id="@user.Id" asp-route-returnUrl="@ViewContext.HttpContext.Request.PathAndQuery()" class="btn btn-sm btn-success">Edytuj</a>
+                    </td>
+                    <td class="text-center align-middle">
+                        <a asp-action="ChangeUserShops" asp-route-id="@user.Id" class="btn btn-sm btn-success">Zmień Sklepy</a>
+                    </td>
+                    <td class="text-center align-middle">
+                        <a asp-action="ChangeUserRoles" asp-route-id="@user.Id" class="btn btn-sm btn-success">Zmień Role</a>
+                    </td>
+                    <td class="text-center align-middle">
+                        <form asp-action="DeleteUser" method="post">
+                            <input type="hidden" name="id" value="@user.Id" />
+                            <button type="submit" class="btn btn-sm btn-danger">
+                                Usuń
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>
+
+<div page-model="@Model.PagingInfo" page-action="Users" page-classes-enabled="true"
+     page-class="btn" page-class-normal="btn-secondary"
+     page-class-selected="btn-success"
+     class="btn-group pull-right m-1">
+</div>

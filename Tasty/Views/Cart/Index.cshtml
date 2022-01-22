@@ -1,0 +1,108 @@
+﻿@model CartIndexViewModel
+
+@{
+    ViewData["Title"] = "Koszyk";
+    ViewBag.Prev = true;
+    ViewBag.ReturnUrl = Model.ReturnUrl;
+}
+
+
+<div style="display: flex; flex-direction: column; margin: 10px 0 0">
+    <div class="shoplist-item my-border backgroud-color-secondary my-box-shadow" style="color: inherit; text-decoration: none; display: flex; flex-direction: column; box-shadow: rgb(0, 0, 0, 0.2) 0px 0px 4px; padding: 20px; margin: 10px 0 0">
+        <h3>Twój Koszyk</h3>
+        <h5>@Model.Cart.Shop.Name</h5>
+    </div>
+    <table class="table table-bordered table-striped backgroud-color-secondary my-box-shadow" style="box-shadow: rgb(0, 0, 0, 0.2) 0px 0px 4px; margin: 15px 0 ">
+        <thead>
+            <tr>
+                <th></th>
+                <th>Ilość</th>
+                <th></th>
+                <th>Przedmiot</th>
+                <th class="text-end">Cena</th>
+                <th class="text-end">Wartość</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var line in Model.Cart.Lines)
+            {
+                <tr>
+                    <td>
+                        <form class="d-flex justify-content-center" asp-action="RemoveFromCart" method="post">
+                            <input type="hidden" name="ShopId" value="@Model.Cart.Shop.ShopId" />
+                            <input type="hidden" name="ItemId" value="@line.Item.ItemId" />
+                            <input type="hidden" name="returnUrl" value="@Model.ReturnUrl" />
+                            <button type="submit" class="btn btn-sm btn-danger">
+                                Usuń
+                            </button>
+                        </form>
+                    </td>
+                    <td class="text-center">@line.Quantity</td>
+                    <td>
+                        <div class="d-flex justify-content-center">
+                            <form class="me-2" asp-action="ChangeQuantity" method="post">
+                                <input type="hidden" name="ShopId" value="@Model.Cart.Shop.ShopId" />
+                                <input type="hidden" name="ItemId" value="@line.Item.ItemId" />
+                                <input type="hidden" name="returnUrl" value="@Model.ReturnUrl" />
+                                <input type="hidden" name="difference" value="1" />
+                                <button type="submit" class="btn btn-sm btn-success">
+                                    <i class="fa fa-plus" aria-hidden="true"></i>
+                                </button>
+                            </form>
+                            <form asp-action="ChangeQuantity" method="post">
+                                <input type="hidden" name="ShopId" value="@Model.Cart.Shop.ShopId" />
+                                <input type="hidden" name="ItemId" value="@line.Item.ItemId" />
+                                <input type="hidden" name="returnUrl" value="@Model.ReturnUrl" />
+                                <input type="hidden" name="difference" value="-1" />
+                                <button type="submit" class="btn btn-sm btn-success">
+                                    <i class="fa fa-minus" aria-hidden="true"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </td>
+                    <td class="text-start">@line.Item.Name</td>
+                    <td class="text-end">@line.Item.Price.ToString("c")</td>
+                    <td class="text-end">
+                        @((line.Quantity * line.Item.Price).ToString("c"))
+                    </td>
+
+                </tr>
+            }
+        </tbody>
+        <tfoot>
+            <tr>
+                @if (@Model.Cart.CheckWithMinPrice() != 0)
+                {
+                    <td colspan="4" class="text-end">Do minimalnej wartości zamówienia brakuje: @Model.Cart.CheckWithMinPrice().ToString("c")</td>
+                    <td class="text-end">Razem:</td>
+                }
+                else
+                {
+                    <td colspan="5" class="text-end">Razem:</td>
+                }
+                <td class="text-end">
+                    @Model.Cart.ComputeTotalValue().ToString("c")
+                </td>
+            </tr>
+            <tr>
+                <td colspan="5" class="text-end">Z dostawą:</td>
+                <td class="text-end">
+                    @Model.Cart.ComputeTotalValueWithTransport().ToString("c")
+                </td>
+            </tr>
+        </tfoot>
+    </table>
+
+    <div class="text-center">
+        <a class="btn btn-success" href="@Model.ReturnUrl">Kontynuuj zakupy</a>
+        @if (@Model.Cart.CheckWithMinPrice() != 0)
+        {
+            <button disabled="disabled" class="btn btn-secondary">Złóż zamówienie</button>
+        }
+        else
+        {
+            <a class="btn btn-success" asp-controller="Order" asp-action="Checkout" asp-route-shopId="@Model.Cart.Shop.ShopId">Złóż zamówienie</a>
+        }
+
+    </div>
+</div>

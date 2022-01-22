@@ -1,0 +1,12 @@
+﻿@model MenuViewModel
+@{
+    ViewData["Title"] = Model.Shop.Name;
+    ViewBag.Prev = true;
+    ViewBag.ReturnUrl = Model.ReturnUrl;
+    ViewBag.IsOpen = Model.IsOpen;
+}
+<a asp-action="List" asp-route-name="@Model.Shop.Name.Trim().Replace(" ","-")" asp-route-shopId="@Model.Shop.ShopId" asp-route-returnUrl="@Model.ReturnUrl">Menu</a>
+<div style="display: flex; flex-direction: column; margin: 10px 0 0">
+    @await Html.PartialAsync("ShopSummary", Model.Shop)
+    @await Html.PartialAsync("DetailPartial", Model.Shop)
+</div>

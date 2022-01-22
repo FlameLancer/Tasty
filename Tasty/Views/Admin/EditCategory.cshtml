@@ -1,0 +1,20 @@
+﻿@model Category
+@{
+    ViewData["Title"] = "Kategorie";
+}
+
+<div class="my-border backgroud-color-secondary my-box-shadow" style="color: inherit; text-decoration: none; display: flex; flex-direction: column; padding: 1.5rem; margin: 10px 0 0">
+    <h3>Kategoria</h3>
+    <p>Prosze podać dane kategorii</p>
+    <div asp-validation-summary="All" class="text-danger"></div>
+    <form asp-action="EditCategory" method="post">
+        <div class="mb-3">
+            <label asp-for="Name" class="form-label">Nazwa kategorii menu</label>
+            <input asp-for="Name" class="form-control" />
+        </div>
+        <input type="hidden" asp-for="CategoryId" />
+        <div class="text-center">
+            <input class="btn btn-success" type="submit" value="Zapisz kategorie" />
+        </div>
+    </form>
+</div>

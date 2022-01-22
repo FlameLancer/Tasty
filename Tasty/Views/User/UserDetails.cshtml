@@ -1,0 +1,33 @@
+﻿@model AppUser
+@{ 
+    ViewData["Title"] = Model.UserName;
+}
+
+<div class="my-border backgroud-color-secondary my-box-shadow" style="display: flex; box-shadow: rgb(0, 0, 0, 0.2) 0px 0px 4px; padding: 1.5rem; margin: 10px 0">
+    <a style="margin: 0 10px 0 0" class="btn btn-success" asp-action="EditUserDetails" asp-route-id="@Model.Id" asp-route-returnUrl="@ViewContext.HttpContext.Request.PathAndQuery()">Edytuj dane konta</a>
+</div>
+
+<table style="margin: 10px 0 0" class="backgroud-color-secondary my-box-shadow table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th>Login</th>
+            <th>Email</th>
+            <th>Imię i nazwisko</th>
+            <th>Numer Telefonu</th>
+            <th>Ulica</th>
+            <th>Kod pocztowy</th>
+            <th>Miasto</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>@Model.UserName</td>
+            <td>@Model.Email</td>
+            <td>@Model.Name</td>
+            <td>@Model.PhoneNumber</td>
+            <td>@Model.Street</td>
+            <td>@Model.Zip</td>
+            <td>@Model.City</td>
+        </tr>
+    </tbody>
+</table>

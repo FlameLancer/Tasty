@@ -1,0 +1,179 @@
+﻿@model Shop
+
+@{
+    ViewData["Title"] = Model.Name ?? "Restauracja";
+}
+
+<div class="text-center m-3">
+    @TempData["message"]
+</div>
+
+<div class="shoplist-item my-border backgroud-color-secondary my-box-shadow" style="color: inherit; text-decoration: none; display: flex; flex-direction: column; box-shadow: rgb(0, 0, 0, 0.2) 0px 0px 4px; padding: 1.5rem; margin: 10px 0 0">
+    <div class="row">
+        <div class="col">
+            <h3>@Model.Name</h3>
+        </div>
+        <div class="col-4 text-end">
+            @if (!User.IsInRole("Pracownicy"))
+            {
+                <a class="btn btn-success" asp-action="EditDetails" asp-route-shopId="@Model.ShopId">Edytuj</a>
+            }
+            else
+            {
+                <button disabled class="btn btn-secondary">Edytuj</button>
+            }
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            @foreach (Category c in Model.Categories)
+            {
+                <span>@c.Name </span>
+            }
+        </div>
+    </div>
+</div>
+
+@await Html.PartialAsync("DetailPartial", Model)
+
+<div style="display: flex; flex-direction: column; margin: 10px 0 0">
+    <div style="font: 500 18px arial, verdena; margin: 5px">
+        Menu
+    </div>
+    <div class="my-border backgroud-color-secondary my-box-shadow" style="display: flex; flex-direction: column; box-shadow: rgb(0, 0, 0, 0.2) 0px 0px 4px; padding: 1.5rem; margin: 10px 0 0 ">
+        <div class="d-flex">
+            <div class="me-auto">
+                <h4>Kategorie</h4>
+            </div>
+            <div>
+                @if (!User.IsInRole("Pracownicy"))
+                {
+                    <a asp-action="CreateMenuCategory" asp-route-shopId="@Model.ShopId" class="btn btn-sm btn-success">Dodaj kategorię</a>
+                }
+                else
+                {
+                    <button disabled class="btn btn-sm btn-secondary">Dodaj kategorię</button>
+                }
+            </div>
+        </div>
+        @foreach (MenuCategory mc in Model.MenuCategories)
+        {
+            <div class="d-flex align-items-center mt-3 mb-3">
+                <div class="me-auto" style="font: 500 18px arial, verdena">
+                    @mc.Name <small style="font-size: initial" class="text-muted">(@(mc.isActive ? "Aktywna" : "Nieaktywna")) (@mc.Priority)</small>
+                </div>
+                <div>
+                    @if (!User.IsInRole("Pracownicy"))
+                    {
+                        <form asp-action="ChangeMenuCategoryStatus" method="post">
+                            <input type="hidden" name="menuCategoryId" value="@mc.MenuCategoryId" />
+                            <input type="hidden" name="shopId" value="@Model.ShopId" />
+                            <button type="submit" class="btn btn-sm btn-danger me-3">
+                                @(mc.isActive ? "Dezaktywuj" : "Aktywuj")
+                            </button>
+                        </form>
+                    }
+                    else
+                    {
+                        <button disabled class="btn btn-sm btn-secondary">@(mc.isActive ? "Dezaktywuj" : "Aktywuj")</button>
+                    }
+                </div>
+                <div>
+                    @if (!Model.Orders.Any(o => o.Lines.Any(l => mc.Items.Contains(l.Item))) && !User.IsInRole("Pracownicy"))
+                    {
+                        <form asp-action="DeleteMenuCategory" method="post">
+                            <input type="hidden" name="menuCategoryId" value="@mc.MenuCategoryId" />
+                            <input type="hidden" name="shopId" value="@Model.ShopId" />
+                            <button type="submit" class="btn btn-sm btn-danger me-3">
+                                Usuń
+                            </button>
+                        </form>
+                    }
+                    else
+                    {
+                        <button disabled class="btn btn-sm btn-secondary me-3">Usuń</button>
+                    }
+                </div>
+                <div>
+                    @if (!User.IsInRole("Pracownicy"))
+                    {
+                        <a asp-action="EditMenuCategory" asp-route-menuCategoryId="@mc.MenuCategoryId" class="btn btn-sm btn-success me-3">Edytuj</a>
+                    }
+                    else
+                    {
+                        <button disabled class="btn btn-sm btn-secondary">Edytuj</button>
+                    }
+                </div>
+                <div>
+                    @if (!User.IsInRole("Pracownicy"))
+                    {
+                        <a asp-action="CreateItem" asp-route-menuCategorId="@mc.MenuCategoryId" asp-route-shopId="@Model.ShopId" class="btn btn-sm btn-success">Dodaj przedmiot</a>
+                    }
+                    else
+                    {
+                        <button disabled class="btn btn-sm btn-secondary">Dodaj przedmiot</button>
+                    }
+                </div>
+            </div>
+            <table class="backgroud-color-secondary my-box-shadow table table-bordered table-striped m-0">
+                <thead>
+                    <tr>
+                        <th style="width: 15%">Nazwa</th>
+                        <th style="width: 35%">Opis</th>
+                        <th style="width: 10%">Cena</th>
+                        <th style="width: 10%">Status</th>
+                        <th style="width: 10%"></th>
+                        <th style="width: 10%"></th>
+                        <th style="width: 10%"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (Item i in mc.Items)
+                    {
+                        <tr>
+                            <td>@i.Name</td>
+                            <td>@i.Description</td>
+                            <td>@i.Price.ToString("c")</td>
+                            <td>@(i.isActive ? "Aktywny" : "Nieaktywny")</td>
+                            <td class="text-center">
+                                @if (!User.IsInRole("Pracownicy"))
+                                {
+                                    <form asp-action="ChangeItemStatus" method="post">
+                                        <input type="hidden" name="itemId" value="@i.ItemId" />
+                                        <input type="hidden" name="shopId" value="@Model.ShopId" />
+                                        <button type="submit" class="btn btn-sm btn-danger">
+                                            @(i.isActive ? "Dezaktywuj" : "Aktywuj")
+                                        </button>
+                                    </form>
+                                }
+                                else
+                                {
+                                    <button disabled class="btn btn-sm btn-secondary">@(i.isActive ? "Dezaktywuj" : "Aktywuj")</button>
+                                }
+                            </td>
+                            <td class="text-center">
+                                <a asp-action="EditItem" asp-route-menuCategorId="@mc.MenuCategoryId" asp-route-shopId="@Model.ShopId" asp-route-itemId="@i.ItemId" class="btn btn-sm btn-success">Edytuj</a>
+                            </td>
+                            <td class="text-center">
+                                @if (!Model.Orders.Any(o => o.Lines.Any(l => l.Item == i)) && !User.IsInRole("Pracownicy"))
+                                {
+                                    <form asp-action="DeleteItem" method="post">
+                                        <input type="hidden" name="itemId" value="@i.ItemId" />
+                                        <input type="hidden" name="shopId" value="@Model.ShopId" />
+                                        <button type="submit" class="btn btn-sm btn-danger">
+                                            Usuń
+                                        </button>
+                                    </form>
+                                }
+                                else
+                                {
+                                    <button disabled class="btn btn-sm btn-secondary">Usuń</button>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+    </div>
+</div>

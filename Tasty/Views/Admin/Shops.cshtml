@@ -1,0 +1,105 @@
+﻿@model ShopsViewModel
+@{
+    ViewData["Title"] = "Restauracje";
+}
+
+<div class="my-border backgroud-color-secondary my-box-shadow" style="display: flex; box-shadow: rgb(0, 0, 0, 0.2) 0px 0px 4px; padding: 1.5rem; margin: 10px 0">
+    <a style="margin: 0 10px 0 0" class="btn @(ViewBag.IsActive == null ? "btn-success" : "btn-outline-success")" asp-action="Shops" asp-route-isActive="" asp-route-page="1">Wszystkie</a>
+    <a style="margin: 0 10px 0 0" class="btn @(ViewBag.IsActive == "Aktywne" ? "btn-success" : "btn-outline-success")" asp-action="Shops" asp-route-isActive="Aktywne" asp-route-page="1">Aktywne</a>
+    <a style="margin: 0 10px 0 0" class="btn @(ViewBag.IsActive == "Nieaktywne" ? "btn-success" : "btn-outline-success")" asp-action="Shops" asp-route-isActive="Nieaktywne" asp-route-page="1">Nieaktywne</a>
+    @if (User.IsInRole("Administratorzy"))
+    {
+        <a style="margin: 0 0 0 10px" class="ms-auto btn btn-success" asp-action="CreateShop">Stwórz Sklep</a>
+        <a style="margin: 0 0 0 10px" class="btn btn-success" asp-action="Categories" asp-route-page="1">Kategorie</a>
+        <a style="margin: 0 0 0 10px" class="btn btn-success" asp-controller="User" asp-action="Users">Użytkownicy</a>
+    }
+    else
+    {
+        <button style="margin: 0 0 0 10px" disabled class="ms-auto btn btn-secondary">Stwórz Sklep</button>
+        <button style="margin: 0 0 0 10px" disabled class="btn btn-secondary">Kategorie</button>
+        <button style="margin: 0 0 0 10px" disabled class="btn btn-secondary">Użytkownicy</button>
+    }
+</div>
+
+@if (Model.Shops.Count() > 0)
+{
+    <table style="margin: 10px 0 0" class="backgroud-color-secondary my-box-shadow table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th style="width: 35%">Nazwa</th>
+                <th style="width: 12.5%"></th>
+                <th style="width: 12.5%"></th>
+                <th style="width: 15%">Status</th>
+                <th style="width: 12.5%"></th>
+                <th style="width: 12.5%"></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (Shop s in Model.Shops)
+            {
+            <tr>
+                <td>@s.Name</td>
+                <td class="text-center">
+                    @if (!User.IsInRole("Kurierzy"))
+                    {
+                        <a asp-action="Shop" asp-route-shopId="@s.ShopId" class="btn btn-sm btn-success">Podgląd</a>
+                    }
+                    else
+                    {
+                        <button disabled class="btn btn-sm btn-secondary">Podgląd</button>
+                    }
+                </td>
+                <td class="text-center">
+                    <a asp-action="Orders" asp-route-shopId="@s.ShopId" class="btn btn-sm btn-success">
+                        Pokaż zamówienia
+                    </a>
+                </td>
+                <td>@(s.isActive ? "Aktywny" : "Nieaktywny")</td>
+                <td class="text-center">
+                    @if (User.IsInRole("Administratorzy") || User.IsInRole("Kierownicy"))
+                    {
+                        <form asp-action="ChangeShopStatus" method="post">
+                            <input type="hidden" name="shopId" value="@s.ShopId" />
+                            <input type="hidden" name="isActive" value="@ViewBag.IsActive" />
+                            <input type="hidden" name="page" value="@Model.PagingInfo.CurrentPage" />
+                            <button type="submit" class="btn btn-sm btn-danger">
+                                @(s.isActive ? "Dezaktywuj" : "Aktywuj")
+                            </button>
+                        </form>
+                    }
+                    else
+                    {
+                        <button disabled class="btn btn-sm btn-secondary">@(s.isActive ? "Dezaktywuj" : "Aktywuj")</button>
+                    }
+                </td>
+                <td class="text-center">
+                    @if (s.Orders.Count() == 0 && User.IsInRole("Administratorzy"))
+                    {
+                        <form asp-action="DeleteShop" method="post">
+                            <input type="hidden" name="shopId" value="@s.ShopId" />
+                            <input type="hidden" name="page" value="@Model.PagingInfo.CurrentPage" />
+                            <button type="submit" class="btn btn-sm btn-danger">
+                                Usuń
+                            </button>
+                        </form>
+                    }
+                    else
+                    {
+                        <button disabled class="btn btn-sm btn-secondary">Usuń</button>
+                    }
+                </td>
+            </tr>
+            }
+        </tbody>    
+    </table>
+}
+else
+{
+    <div class="text-center">Brak restauracji</div>
+}
+
+<div page-model="@Model.PagingInfo" page-action="Shops" page-classes-enabled="true"
+     page-class="btn" page-class-normal="btn-secondary"
+     page-class-selected="btn-success" page-url-isActive="@ViewBag.IsActive"
+     class="btn-group pull-right m-1">
+</div>

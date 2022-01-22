@@ -1,0 +1,11 @@
+﻿@model Shop
+
+<a class="shoplist-item my-border backgroud-color-secondary my-box-shadow" asp-controller="Menu" asp-action="List" asp-route-name="@Model.Name.Trim().Replace(" ","-")" asp-route-shopId="@Model.ShopId" asp-route-returnUrl="@ViewContext.HttpContext.Request.PathAndQuery()" style="color: inherit; text-decoration: none; display: flex; flex-direction: column; padding: 1.5rem; margin: 10px 0 ">
+    <h3>@Model.Name</h3>
+    <div>
+        @foreach (Category c in Model.Categories)
+        {
+            <span>@c.Name </span>
+        }
+    </div>
+</a>

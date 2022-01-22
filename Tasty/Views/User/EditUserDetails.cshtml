@@ -1,0 +1,43 @@
+﻿@model AppUser
+@{
+    ViewData["Title"] = "Edycja użytkownika";
+}
+
+<div class="my-border backgroud-color-secondary my-box-shadow" style="color: inherit; text-decoration: none; display: flex; flex-direction: column; box-shadow: rgb(0, 0, 0, 0.2) 0px 0px 4px; padding: 1.5rem; margin: 10px 0 0">
+    <h3>Edytuj konta użytkownika</h3>
+    <div asp-validation-summary="All" class="text-danger"></div>
+    <form asp-action="EditUserDetails" method="post">
+        <input hidden id="returnUrl" name="returnUrl" value="@ViewBag.ReturnUrl" />
+        <div class="mb-3">
+            <label asp-for="Email" class="form-label">E-mail</label>
+            <input asp-for="Email" class="form-control" />
+        </div>
+        <div class="form-group">
+            <label for="password">Hasło</label>
+            <input type="password" name="password" class="form-control" />
+        </div>
+        <div class="mb-3">
+            <label asp-for="Name" class="form-label">Imię i nazwisko</label>
+            <input asp-for="Name" class="form-control" />
+        </div>
+        <div class="mb-3">
+            <label asp-for="PhoneNumber" class="form-label">Numer telefonu</label>
+            <input asp-for="PhoneNumber" class="form-control" />
+        </div>
+        <div class="mb-3">
+            <label asp-for="Street" class="form-label">Ulica</label>
+            <input asp-for="Street" class="form-control" />
+        </div>
+        <div class="mb-3">
+            <label asp-for="City" class="form-label">Miasto</label>
+            <input asp-for="City" class="form-control" />
+        </div>
+        <div class="mb-3">
+            <label asp-for="Zip" class="form-label">Kod pocztowy</label>
+            <input asp-for="Zip" class="form-control" />
+        </div>
+        <div class="text-center">
+            <input class="btn btn-success" type="submit" value="Zapisz zmiany" />
+        </div>
+    </form>
+</div>

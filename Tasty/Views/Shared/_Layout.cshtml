@@ -1,0 +1,73 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Tasty</title>
+    <link rel="stylesheet" href="~/lib/font-awesome/css/font-awesome.min.css" />
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" />
+    <style>
+        .input-validation-error { border-color: red; background-color: #fee; }
+    </style>
+</head>
+<body class="backgroud-repeat">
+    <div>
+        <header>
+            <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light backgroud-color-primary my-border-bottom my-box-shadow mb-3">
+                <div class="container">
+                    @if (ViewBag.Prev)
+                    {
+                        <a style="position: relative" class="navbar-brand my-text-color" href="@ViewBag.ReturnUrl"><i style="position: absolute; right: 3.5rem; top: 0.675rem;" class="fa fa-angle-left"></i><span>Tasty</span></a>
+                    }
+                    else
+                    {
+                        <a class="navbar-brand my-text-color" asp-area="" asp-controller="Home" asp-action="Index">Tasty</a>
+                    }
+
+                    @if (!User.Identity.IsAuthenticated)
+                    {
+                        <div class="d-flex text-end">
+                            <a class="btn btn-sm btn-success" asp-controller="Account" asp-action="Login">Zaloguj</a>
+                            <a class="btn btn-sm ms-2 btn-success" asp-controller="User" asp-action="CreateUser" asp-route-returnUrl="@ViewContext.HttpContext.Request.PathAndQuery()">Stwórz Konto</a>
+                        </div>
+                    }
+                    else
+                    {
+                <div class="d-flex text-end align-items-center">
+                    @User.Identity.Name
+                    @if (!User.IsInRole("Użytkownicy"))
+                    {
+                        <a class="btn btn-sm ms-2 btn-success" asp-controller="Admin" asp-action="Shops" asp-route-isActive="" asp-route-page="1">Panel Administratora</a>
+                    }
+                    <a class="btn btn-sm ms-2 btn-success" asp-controller="User" asp-action="UserDetails" asp-route-name="@User.Identity.Name">Twoje konto</a>
+                    <a class="btn btn-sm ms-2 btn-success" asp-controller="Account" asp-action="Logout">Wyloguj</a>
+                </div>
+                    }
+
+                    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                            aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+
+                </div>
+            </nav>
+        </header>
+        <div class="container">
+            <main role="main" style="padding-bottom: 20px">
+                @RenderBody()
+            </main>
+        </div>
+
+        <footer class="my-border-top footer text-muted backgroud-color-secondary">
+            <div class="container">
+                &copy; 2021 - Tasty
+            </div>
+        </footer>
+        <script src="~/lib/jquery/dist/jquery.min.js"></script>
+        <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+        <script src="~/js/site.js" asp-append-version="true"></script>
+        @RenderSection("Scripts", required: false)
+    </div>
+</body>
+</html>

@@ -1,0 +1,73 @@
+﻿@model OrdersViewModel
+@{
+    ViewData["Title"] = "Zamówienia";
+}
+<div class="my-border backgroud-color-secondary my-box-shadow" style="display: flex; padding: 1.5rem; margin: 10px 0">
+    <a style="margin: 10px 10px 0 0" class="btn @(ViewBag.Status == null ? "btn-success" : "btn-outline-success")" asp-action="Orders" asp-route-shopId="@ViewBag.ShopId" asp-route-status="" asp-route-page="1">Wszystkie</a>
+    @foreach (Order.Status s in (Order.Status[])Enum.GetValues(typeof(Order.Status)))
+    {
+        <a style="margin: 10px 10px 0 0" class="btn @(ViewBag.Status == s ? "btn-success" : "btn-outline-success")" asp-action="Orders" asp-route-shopId="@ViewBag.ShopId" asp-route-status="@(s)" asp-route-page="1">@s.ToString()</a>
+    }
+</div>
+@if (Model.Orders.Count() > 0)
+{
+    <table style="margin: 10px 0 0" class="backgroud-color-secondary my-box-shadow table table-bordered table-striped">
+        <tr>
+            <th>Klient</th>
+            <th>Ulica</th>
+            <th>Kod Pocztowy</th>
+            <th>Miasto</th>
+            <th>Telefon</th>
+            <th>Data złożenia zamówienia</th>
+            <th>Czas dostawy</th>
+            <th>Szczegóły</th>
+            <th>Status zamówienia</th>
+        </tr>
+        @foreach (Order o in Model.Orders)
+        {
+            <tr>
+                <td>@o.Name</td>
+                <td>@o.Street</td>
+                <td>@o.Zip</td>
+                <td>@o.City</td>
+                <td>@o.Phone</td>
+                <td>@o.CreateDate</td>
+                <td>@o.DeliveryTime.ToString(@"hh\:mm")</td>
+                <td class="text-center align-middle">
+                    <a asp-action="Order" asp-route-orderId="@o.OrderId" asp-route-returnUrl="@ViewContext.HttpContext.Request.PathAndQuery()" class="btn btn-sm btn-success">Podgląd</a>
+                </td>
+                <td class="text-center align-middle">
+                    <form asp-action="ChangeOrderStatus" method="post">
+                        <select onchange="this.form.submit()" class="form-select form-select-sm mb-1" name="statusChange">
+                            @foreach (Order.Status s in (Order.Status[])Enum.GetValues(typeof(Order.Status)))
+                            {
+                                if (s == o.DeliveryStatus)
+                                {
+                                    <option value="@s" selected>@s.ToString()</option>
+                                }
+                                else
+                                {
+                                    <option value="@s">@s.ToString()</option>
+                                }
+                            }
+                        </select>
+                        <input type="hidden" name="orderId" value="@o.OrderId" />
+                        <input type="hidden" name="page" value="@Model.PagingInfo.CurrentPage" />
+                        <input type="hidden" name="status" value="@ViewBag.Status" />
+                    </form>
+                </td>
+            </tr>
+        }
+    </table>
+}
+else
+{
+    <div class="text-center">Brak zamówień</div>
+}
+
+<div page-model="@Model.PagingInfo" page-action="Orders" page-classes-enabled="true"
+     page-class="btn" page-class-normal="btn-secondary"
+     page-class-selected="btn-success" page-url-status="@ViewBag.Status"
+     class="btn-group pull-right m-1">
+</div>
+

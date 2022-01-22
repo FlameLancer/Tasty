@@ -1,0 +1,83 @@
+﻿@model Shop
+@{ 
+    var culture = new System.Globalization.CultureInfo("pl-PL");
+}
+
+<div style="display: flex; flex-direction: column; margin: 10px 0 0">
+    <div style="font: 500 18px arial, verdena; margin: 5px">
+        Godziny dostawy
+    </div>
+    <div class="my-border backgroud-color-secondary my-box-shadow" style="display: flex; flex-direction: column; box-shadow: rgb(0, 0, 0, 0.2) 0px 0px 4px; padding: 1.5rem; margin: 10px 0 0 ">
+        @for (int i = 1; i < 8; ++i)
+        {
+            <div class="row">
+                <div class="col">
+                    @culture.DateTimeFormat.GetDayName(@Model.OpeningTimes.ElementAt(i % 7).DayOfWeek)
+                </div>
+                <div class="col text-end">
+                    @if (Model.OpeningTimes.ElementAt(i % 7).Opening == Model.OpeningTimes.ElementAt(i % 7).Closing)
+                    {
+                        @:Nieczynne
+                    }
+                    else if (Model.OpeningTimes.ElementAt(i % 7).Closing == TimeSpan.FromDays(1))
+                    {
+                        @Model.OpeningTimes.ElementAt(i % 7).Opening.ToString(@"hh\:mm")
+                        @:&nbsp;-&nbsp;
+                        @:24:00
+                    }
+                    else
+                    {
+                        @Model.OpeningTimes.ElementAt(i % 7).Opening.ToString(@"hh\:mm")
+                        @:&nbsp;-&nbsp;
+                        @Model.OpeningTimes.ElementAt(i % 7).Closing.ToString(@"hh\:mm")
+                    }
+                </div>
+            </div>
+        }
+    </div>
+</div>
+<div style="display: flex; flex-direction: column; margin: 10px 0 0">
+    <div style="font: 500 18px arial, verdena; margin: 5px">
+        Koszty dostawy
+    </div>
+    <div class="my-border backgroud-color-secondary my-box-shadow" style="display: flex; flex-direction: column; box-shadow: rgb(0, 0, 0, 0.2) 0px 0px 4px; padding: 1.5rem; margin: 10px 0 0 ">
+        <div class="row">
+            <div class="col">
+                Minimalna kwota zamówienia
+            </div>
+            <div class="col text-end">
+                @Model.MinPrice.ToString("c")
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                Koszt Dostawy
+            </div>
+            <div class="col text-end">
+                @Model.TransportPrice.ToString("c")
+            </div>
+        </div>
+    </div>
+</div>
+<div style="display: flex; flex-direction: column; margin: 10px 0 0">
+    <div style="font: 500 18px arial, verdena; margin: 5px">
+        Informacja prawna
+    </div>
+    <div class="my-border backgroud-color-secondary my-box-shadow" style="display: flex; flex-direction: column; box-shadow: rgb(0, 0, 0, 0.2) 0px 0px 4px; padding: 1.5rem; margin: 10px 0 0 ">
+        <div class="row">
+            <div class="col">
+                @Model.Name
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                @Model.ShopAddress.Street
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                @Model.ShopAddress.PostCode @Model.ShopAddress.City
+            </div>
+        </div>
+    </div>
+</div>

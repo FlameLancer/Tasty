@@ -1,0 +1,41 @@
+﻿@model Order
+@{
+    ViewBag.Prev = true;
+    ViewData["Title"] = "Zamówienie";
+}
+
+<table style="margin: 10px 0 0" class="backgroud-color-secondary my-box-shadow table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th>Nazwa przedmiot</th>
+            <th>Ilość</th>
+            <th class="text-end">Cena</th>
+            <th class="text-end">Wartość</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (CartLine l in Model.Lines)
+        {
+            <tr>
+                <td>@l.Item.Name</td>
+                <td>@l.Quantity</td>
+                <td>@l.Item.Price.ToString("c")</td>
+                <td>@((l.Quantity * l.Item.Price).ToString("c"))</td>
+            </tr>
+        }
+    </tbody>
+    <tfoot>
+        <tr>
+            <td colspan="3" class="text-end">Razem:</td>
+            <td class="text-end">
+                @Model.Lines.Sum(l => l.Item.Price * l.Quantity)
+            </td>
+        </tr>
+        <tr>
+            <td colspan="3" class="text-end">Z dostawą:</td>
+            <td class="text-end">
+                @Model.Lines.Sum(l => l.Item.Price * l.Quantity + Model.Shop.TransportPrice)
+            </td>
+        </tr>
+    </tfoot>
+</table>

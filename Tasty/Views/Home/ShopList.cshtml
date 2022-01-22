@@ -1,0 +1,66 @@
+﻿@model ShopListViewModel
+@{
+    ViewData["Title"] = "Lista Restauracji";
+    string sortOrder = ViewBag.NameSortParam == "nameDesc" ? "name" : "nameDesc";
+    var parms = new Dictionary<string, string>
+{
+        { "postCode", ViewBag.GetPostCode },
+        { "sortOrder", ViewBag.NameSortParam },
+        { "searchString", ViewBag.SearchString },
+        { "categoryName", ViewBag.CategoryName }
+    };
+}
+<form asp-action="ShopList" class="my-border backgroud-color-secondary my-box-shadow" method="get" style="display: flex; flex-direction: column; padding: 1.5rem; margin: 10px 0">
+    <div class="mb-3">
+        <label for="postCode" class="form-label">Podaj swój kod pocztowy</label>
+        <span class="d-flex">
+            <input class="form-control" style="width: 60%" type="text" name="postCode" value="@ViewBag.GetPostCode" />
+            <button class="ms-2 btn btn-success" asp-action="ShopList" asp-all-route-data="@parms.WithRoute("postCode", ViewBag.GetPostCode as string)">Wyszukaj</button>
+        </span>
+    </div>
+    <div class="mb-3">
+        <label for="searchString" class="form-label">Podaj nazwe</label>
+        <span class="d-flex">
+            <input type="text" class="form-control" style="width: 60%" name="searchString" value="@ViewBag.SearchString" />
+            <button class="ms-2 btn btn-success" asp-action="ShopList" asp-all-route-data="@parms.WithRoute("searchString", ViewBag.SearchString as string)">Wyszukaj</button>
+            <a class="ms-2 btn btn-success" asp-action="ShopList" asp-route-postCode="@ViewBag.GetPostCode">Zresetuj</a>
+        </span>
+        <div id="searchString" class="form-text">Wyszukaj po nazwie restauracji</div>
+        <input type="hidden" name="sortOrder" value="@ViewBag.NameSortParam" />
+    </div>
+    <div style="margin-top: -10px" class="mb-3 d-flex flex-wrap">
+        <a style="margin: 10px 10px 0 0" class="btn @(ViewBag.CategoryName == null ? "btn-success" : "btn-outline-success")" asp-action="ShopList" asp-all-route-data="@parms.WithRoute("categoryName", null)">Wszystkie</a>
+        @foreach (Category c in Model.Categories)
+        {
+            <a style="margin: 10px 10px 0 0" class="btn @(ViewBag.CategoryName == c.Name ? "btn-success" : "btn-outline-success")" asp-action="ShopList" asp-all-route-data="@parms.WithRoute("categoryName", c.Name)">@c.Name</a>
+        }
+    </div>
+    <div>
+        <a asp-action="ShopList" asp-all-route-data="@parms.WithRoute("sortOrder", sortOrder)">Sortuj po nazwię</a>
+    </div>
+</form>
+
+@if (Model.Shops.Any())
+{
+    <div class="shoplist-item" style="display: flex; flex-direction: column; margin: 10px 0 0">
+        <div style="font: 500 18px arial, verdena; margin: 5px">
+            Zamawiaj z @Model.Shops.Count() restauracji
+        </div>
+        @foreach (Shop s in Model.Shops)
+        {
+            @await Html.PartialAsync("ShopSummary", s)
+        }
+    </div>
+}
+@if (Model.ClosedShops.Any())
+{
+    <div class="shoplist-item" style="display: flex; flex-direction: column; margin: 10px 0 0">
+        <div style="font: 500 18px arial, verdena; margin: 5px">
+            Dostawy Wstrzymane
+        </div>
+        @foreach (Shop s in Model.ClosedShops)
+        {
+            @await Html.PartialAsync("ShopSummary", s)
+        }
+    </div>
+}
